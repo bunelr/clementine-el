@@ -47,6 +47,17 @@
                     "GetMetadata" :int32 song_id))
 
 
+(defun clementine-get-property (property song_object)
+  "Return the value of the property PROPERTY for the song metadata SONG_OBJECT."
+  (caadr (assoc property song_object)))
+
+(defun clementine-display-song-info (song_object)
+  "Return a string at represent the song SONG_OBJECT.
+TODO: Make the format configurable"
+  (format "%s - %s"
+          (clementine-get-property "artist" song_object)
+          (clementine-get-property "title" song_object)))
+
 
 
 ;;; clementine.el ends here
