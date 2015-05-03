@@ -35,23 +35,32 @@
 
 
 ;;; Convenience methods
+(defalias 'clementine-tracklist-method
+  (apply-partially 'dbus-call-method :session clementine-service clementine-TrackList-path
+                   clementine-interface )
+  "Convenience function to perform call on the Tracklist path.
+Use the METHOD function, with the arguments ARGUMENTS.")
+
+(defalias 'clementine-player-method
+  (apply-partially 'dbus-call-method :session clementine-service clementine-Player-path
+                   clementine-interface )
+  "Convenience function to perform call on the Player path.
+Use the METHOD function, with the arguments ARGUMENTS.")
+
+;;; Actually useful stuff
 
 (defun clementine-get-current-song-metadata ()
   "Return the metadata associated with the current song playing."
-  (dbus-call-method :session clementine-service clementine-Player-path
-                    clementine-interface "GetMetadata"))
+  (clementine-player-method "GetMetadata")
+  )
 
 (defun clementine-get-song-metadata (song_id)
   "Return the metadata for the song with id SONG_ID."
-  (dbus-call-method :session clementine-service clementine-TrackList-path
-                    clementine-interface
-                    "GetMetadata" :int32 song_id))
+  (clementine-tracklist-method "GetMetadata" :int32 song_id))
 
 (defun clementine-get-tracklist-length ()
-  "Return the length of the current Tracklist"
-  (dbus-call-method :session clementine-service clementine-TrackList-path
-                    clementine-interface
-                    "GetLength"))
+  "Return the length of the current Tracklist."
+  (clementine-tracklist-method "GetLength"))
 
 
 (defun clementine-get-property (property song_object)
